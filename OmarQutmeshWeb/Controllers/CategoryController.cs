@@ -1,5 +1,6 @@
 ﻿using BulkyBookWeb.Data;
 using Microsoft.AspNetCore.Mvc;
+using OmarQutmeshWeb.Models;
 
 namespace BulkyBookWeb.Controllers
 {
@@ -18,6 +19,15 @@ namespace BulkyBookWeb.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ActionName("Create")]
+        public IActionResult CreatePost(Category category)
+        {
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
