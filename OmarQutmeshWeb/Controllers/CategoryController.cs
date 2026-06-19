@@ -22,12 +22,22 @@ namespace BulkyBookWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [ActionName("Create")]
         public IActionResult CreatePost(Category category)
         {
-            _context.Categories.Add(category);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
+            if (!String.IsNullOrEmpty(category.Name) && _context.Categories.Any(c => c.Name.ToLower() == category.Name.ToLower()))
+            {
+                ModelState.AddModelError("", "Category name already exists! ");
+            }
+            if (ModelState.IsValid)
+ 
+            {
+                _context.Categories.Add(category);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View();
         }
     }
 }
