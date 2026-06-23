@@ -1,6 +1,7 @@
-﻿using BulkyBookWeb.Data;
+﻿using BulkyBook.Models;
+using BulkyBookWeb.Data;
 using Microsoft.AspNetCore.Mvc;
-using OmarQutmeshWeb.Models;
+
 
 namespace BulkyBookWeb.Controllers
 {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OmarQutmeshWeb.Models;
 
-
+using BulkyBook.Models;
 namespace BulkyBookWeb.Data
 {
     public class ApplicationDbContext : DbContext
