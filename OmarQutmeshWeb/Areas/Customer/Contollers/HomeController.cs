@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace OmarQutmeshWeb.Controllers
+namespace BulkyBookWeb.Areas.Customer.Contollers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         public IActionResult Index()
