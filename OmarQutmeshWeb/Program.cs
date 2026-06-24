@@ -1,3 +1,5 @@
+using BulkyBook.Business.Services;
+using BulkyBook.Business.Services.IServices;
 using BulkyBookWeb.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection"));
 });
-
+builder.Services.AddScoped<ICategorySerivce, CategoryService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
