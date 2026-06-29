@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace BulkyBookWeb.Areas.Customer.Contollers
+namespace BulkyBookWeb.Areas.Customer.Controllers
 {
     [Area("Customer")]
     public class HomeController : Controller
@@ -15,6 +15,7 @@ namespace BulkyBookWeb.Areas.Customer.Contollers
         {
             return View();
         }
+
 
     }
 }
