@@ -8,13 +8,14 @@ using System.Text;
 
 namespace BulkyBook.Business.Services
 {
-    public class CategoryService : ICategorySerivce
+    public class CategoryService : ICategoryService
     {
         private readonly ApplicationDbContext _context;
         public CategoryService(ApplicationDbContext context)
         {
             _context = context;
         }
+
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
             return await _context.Categories.ToListAsync();
@@ -24,10 +25,11 @@ namespace BulkyBook.Business.Services
         {
             return await _context.Categories.FindAsync(id);
         }
+
         public async Task<Category> CreateCategoryAsync(Category category)
         {
             _context.Categories.Add(category);
-             await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return category;
         }
 
@@ -42,7 +44,6 @@ namespace BulkyBook.Business.Services
             await _context.SaveChangesAsync();
         }
 
-    
         public async Task UpdateCategoryAsync(Category category)
         {
             _context.Categories.Update(category);
@@ -51,13 +52,13 @@ namespace BulkyBook.Business.Services
 
         public async Task<bool> IsCategoryNameUniqueAsync(string name, int? categoryId = null)
         {
-            if (categoryId.HasValue) 
+            if (categoryId.HasValue)
             {
-                 return !await _context.Categories.AnyAsync(c => c.Name.ToLower() == name.ToLower() && c.Id != categoryId.Value);
+                return !await _context.Categories.AnyAsync(c => c.Name.ToLower() == name.ToLower() && c.Id != categoryId.Value);
             }
-            else 
+            else
             {
-                return !await _context.Categories.AnyAsync(c => c.Name.ToLower() == name.ToLower() );
+                return !await _context.Categories.AnyAsync(c => c.Name.ToLower() == name.ToLower());
             }
         }
     }
