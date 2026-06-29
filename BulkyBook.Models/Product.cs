@@ -3,6 +3,7 @@ using Microsoft.Extensions.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
@@ -44,6 +45,10 @@ namespace BulkyBook.Models
         [Required]
         [Range(1, 1000)]
         public double Price100 { get; set; }
+
+        public int CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; }
 
         [ValidateNever]
         [Display(Name ="Product Image")]  
