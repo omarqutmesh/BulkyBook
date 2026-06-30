@@ -104,7 +104,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         public async Task<IActionResult> GetAll()
         {
             var products = await _productService.GetAllProductsAsync();
-            return Json(new { data = "products" });
+            return Json(new { data = products });
         }
         #endregion
     }
