@@ -19,6 +19,8 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             return View(products);
         }
 
+        
+
         public async Task<IActionResult> Create()
         {
             return View();
@@ -97,5 +99,13 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             return RedirectToAction("Index");
 
         }
+
+        #region API CALLS
+        public async Task<IActionResult> GetAll()
+        {
+            var products = await _productService.GetAllProductsAsync();
+            return Json(new { data = "products" });
+        }
+        #endregion
     }
 }
