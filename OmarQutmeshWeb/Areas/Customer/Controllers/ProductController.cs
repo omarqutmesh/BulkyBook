@@ -34,7 +34,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                     Text = c.Name,
                     Value = c.Id.ToString()
                 });
-            ViewData["categoriesList"] = categroyList;
+            ViewBag.CategoryList = categroyList;
             return View();
         }
 
