@@ -1,6 +1,8 @@
 ﻿using BulkyBook.Business.Services.IServices;
 using BulkyBook.Models;
+using BulkyBook.Models.ViewModels;
 using BulkyBookWeb.Data;
+using BulkyBook.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -28,14 +30,19 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         public async Task<IActionResult> Upsert()
         {
-            IEnumerable<SelectListItem> categroyList = (await _categoryService.GetAllCategoriesAsync())
-                .Select(c => new SelectListItem
+            var categories = await _categoryService.GetAllCategoriesAsync();
+
+            ProductVM productVM = new ProductVM()
+            {
+                CategoryList = categories.Select(c => new SelectListItem
                 {
                     Text = c.Name,
                     Value = c.Id.ToString()
-                });
-            ViewBag.CategoryList = categroyList;
-            return View();
+                }),
+                Product = new Product()
+            };
+            
+            return View(productVM);
         }
 
         [HttpPost]
