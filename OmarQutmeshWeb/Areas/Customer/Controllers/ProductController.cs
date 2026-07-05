@@ -29,7 +29,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         
 
-        public async Task<IActionResult> Upsert()
+        public async Task<IActionResult> Upsert(int? id)
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
 
@@ -42,8 +42,18 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 }),
                 Product = new Product()
             };
+            if (id == null || id == 0)
+            {
+                // create
+                return View(productVM);
+            }
+            else 
+            {
+                productVM.Product = await _productService.GetProductByIdAsync(id.Value);
+                return View(productVM);
+            }
             
-            return View(productVM);
+           
         }
 
         [HttpPost]
