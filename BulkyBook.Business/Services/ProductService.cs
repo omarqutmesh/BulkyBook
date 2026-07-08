@@ -1,6 +1,6 @@
 ﻿using BulkyBook.Business.Services.IServices;
 using BulkyBook.Models;
-using BulkyBookWeb.Data;
+using BulkyBook.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
