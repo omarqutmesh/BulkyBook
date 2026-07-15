@@ -26,6 +26,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 }).AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/identity/account/login";
+    options.LogoutPath = "/identity/Account/Logout";
+    options.AccessDeniedPath = "/identity/Account/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromDays(30);
+});
 
 var app = builder.Build();
 

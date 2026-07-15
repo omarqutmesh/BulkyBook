@@ -1,15 +1,18 @@
 ﻿using BulkyBook.Business.Services;
 using BulkyBook.Business.Services.IServices;
+using BulkyBook.DataAccess.Data;
 using BulkyBook.Models;
 using BulkyBook.Models.ViewModels;
 using BulkyBook.Models.ViewModels;
-using BulkyBook.DataAccess.Data;
+using BulkyBook.Utiltiy;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BulkyBookWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.RoleAdmin)]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
@@ -22,6 +25,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             _categoryService = categoryService;
             _webHostEnvironment = webHostEnvironment;
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
 
