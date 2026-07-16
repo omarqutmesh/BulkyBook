@@ -21,13 +21,14 @@ namespace BulkyBookWeb.Areas.Identity.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
         }
-        public IActionResult Login()
+        public IActionResult Login(string? returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginVM loginVM)
+        public async Task<IActionResult> Login(LoginVM loginVM, string? returnUrl = null)
         {
             if (ModelState.IsValid)
             {
@@ -36,6 +37,11 @@ namespace BulkyBookWeb.Areas.Identity.Controllers
 
                 if (result.Succeeded)
                 {
+                    // Redirect to returnUrl if valid, otherwise go to Home
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
                     return RedirectToAction("Index", "Home", new { area = "Customer" });
                 }
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -43,7 +49,7 @@ namespace BulkyBookWeb.Areas.Identity.Controllers
             return View(loginVM);
         }
 
-        public IActionResult Register()
+        public IActionResult Register(string? returnUrl = null)
         {
             var model = new RegisterVM
             {
@@ -54,11 +60,12 @@ namespace BulkyBookWeb.Areas.Identity.Controllers
                     new SelectListItem{Text=SD.RoleEmployee, Value=SD.RoleEmployee},
                 ]
             };
+            ViewData["ReturnUrl"] = returnUrl;
             return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterVM registerVM)
+        public async Task<IActionResult> Register(RegisterVM registerVM, string? returnUrl = null)
         {
             if (!await _roleManager.RoleExistsAsync(SD.RoleCustomer))
             {
@@ -97,7 +104,11 @@ namespace BulkyBookWeb.Areas.Identity.Controllers
                     }
                     //user has been created
                     await _signInManager.SignInAsync(user, isPersistent: false);
-
+                    // Redirect to returnUrl if valid, otherwise go to Home
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
                     return RedirectToAction("Index", "Home", new { area = "Customer" });
                 }
 
