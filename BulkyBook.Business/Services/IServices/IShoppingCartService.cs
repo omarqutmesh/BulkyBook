@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BulkyBook.Business.Services.IServices
 {
-    public class IShoppingCartService
+    public interface IShoppingCartService
     {
         Task<ShoppingCart?> GetCartByIdAsync(int cartId);
         Task<IEnumerable<ShoppingCart>> GetUserCartItemsAsync(string userId);
