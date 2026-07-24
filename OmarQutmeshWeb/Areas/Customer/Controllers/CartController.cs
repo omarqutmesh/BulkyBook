@@ -18,7 +18,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         private readonly IShoppingCartService _shoppingCartService;
         private readonly IApplicationUserService _applicationUserService;
 
-        public CartController(IProductService productService, IShoppingCartService shoppingCartService, IApplicationUserService applicationUserService) 
+        public CartController(IProductService productService, IShoppingCartService shoppingCartService, IApplicationUserService applicationUserService)
         {
             _productService = productService;
             _shoppingCartService = shoppingCartService;
@@ -55,7 +55,40 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 shoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
             return View(shoppingCartVM);
+
+
         }
-  
+        public async Task<IActionResult> Plus(int cartId)
+        {
+            var cart = await _shoppingCartService.GetCartByIdAsync(cartId);
+            if (cart != null)
+            {
+                cart.Count++;
+                await _shoppingCartService.UpdateCartAsync(cart);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Minus(int cartId)
+        {
+            var cart = await _shoppingCartService.GetCartByIdAsync(cartId);
+            if (cart != null)
+            {
+                cart.Count--;
+                await _shoppingCartService.UpdateCartAsync(cart);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Remove(int cartId)
+        {
+            var cart = await _shoppingCartService.GetCartByIdAsync(cartId);
+            if (cart != null)
+            {
+                cart.Count = 0;
+                await _shoppingCartService.UpdateCartAsync(cart);
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
