@@ -1,13 +1,11 @@
-﻿using BulkyBook.Business.Services;
-using BulkyBook.Business.Services.IServices;
+﻿using BulkyBook.Business.Services.IServices;
 using BulkyBook.Models;
-using BulkyBook.Utiltiy;
 using BulkyBook.Models.ViewModels;
+using BulkyBook.Utiltiy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
-
 
 namespace BulkyBookWeb.Areas.Customer.Controllers
 {
@@ -15,16 +13,16 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
     [Authorize]
     public class CartController : Controller
     {
-        private readonly IProductService _productService;
+        private readonly IOrderService _orderService;
         private readonly IShoppingCartService _shoppingCartService;
         private readonly IApplicationUserService _applicationUserService;
-
-        public CartController(IProductService productService, IShoppingCartService shoppingCartService, IApplicationUserService applicationUserService)
+        public CartController(IOrderService orderService, IShoppingCartService shoppingCartService, IApplicationUserService applicationUserService)
         {
-            _productService = productService;
+            _orderService = orderService;
             _shoppingCartService = shoppingCartService;
             _applicationUserService = applicationUserService;
         }
+
         public async Task<IActionResult> Index()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -36,7 +34,6 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
             var cartItems = await _shoppingCartService.GetUserCartItemsAsync(userId);
             var user = await _applicationUserService.GetUserByIdAsync(userId);
-
             ShoppingCartVM shoppingCartVM = new()
             {
                 ShoppingCartList = cartItems,
@@ -51,13 +48,12 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             shoppingCartVM.OrderHeader.State = user.State;
             shoppingCartVM.OrderHeader.PostalCode = user.PostalCode;
 
+
             foreach (var cart in shoppingCartVM.ShoppingCartList)
             {
                 shoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
             }
             return View(shoppingCartVM);
-
-
         }
         [HttpPost]
         [ActionName("Index")]
@@ -81,23 +77,30 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             }
 
 
-            shoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
-
-            //create order 
-            return View(shoppingCartVM);
-        }
-        public async Task<IActionResult> Plus(int cartId)
-        {
-            var cart = await _shoppingCartService.GetCartByIdAsync(cartId);
-            if (cart != null)
+            shoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
+            shoppingCartVM.OrderHeader.OrderDetails = shoppingCartVM.ShoppingCartList.Select(cart => new OrderDetails
             {
-                cart.Count++;
-                await _shoppingCartService.UpdateCartAsync(cart);
-            }
-            return RedirectToAction(nameof(Index));
+                ProductId = cart.ProductId,
+                Price = cart.Price,
+                Count = cart.Count,
+            });
+            //create order 
+
+            await _orderService.CreateOrderAsync(shoppingCartVM.OrderHeader);
+            return RedirectToAction("OrderConfirmation", new { id = shoppingCartVM.OrderHeader.Id });
+
         }
 
-        public async Task<IActionResult> Minus(int cartId)
+
+        public async Task<IActionResult> OrderConfirmation(int id)
+        {
+
+            return View(id);
+        }
+
+
+
+        public async Task<IActionResult> Plus(int cartId)
         {
             var cart = await _shoppingCartService.GetCartByIdAsync(cartId);
             if (cart != null)
@@ -115,6 +118,17 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Minus(int cartId)
+        {
+            var cart = await _shoppingCartService.GetCartByIdAsync(cartId);
+            if (cart != null)
+            {
+                cart.Count--;
+                await _shoppingCartService.UpdateCartAsync(cart);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         public async Task<IActionResult> Remove(int cartId)
         {
             var cart = await _shoppingCartService.GetCartByIdAsync(cartId);
@@ -125,6 +139,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
         public async Task<IActionResult> UpdateCart(int cartId, int count)
         {
             var cart = await _shoppingCartService.GetCartByIdAsync(cartId);
@@ -153,5 +168,6 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
             return Ok(new { success = true });
         }
+
     }
 }
