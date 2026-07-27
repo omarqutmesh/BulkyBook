@@ -4,7 +4,6 @@ using BulkyBook.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Net.Quic;
 using System.Text;
 
 namespace BulkyBook.Business.Services
@@ -12,14 +11,18 @@ namespace BulkyBook.Business.Services
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _db;
+
         public OrderService(ApplicationDbContext db)
         {
             _db = db;
         }
 
-            Task<OrderHeader> IOrderService.CreateOrderAsync(OrderHeader orderHeader)
+        public async Task<OrderHeader> CreateOrderAsync(OrderHeader orderHeader)
         {
-            throw new NotImplementedException();
+            _db.OrderHeaders.Add(orderHeader);
+            await _db.SaveChangesAsync();
+
+            return orderHeader;
         }
 
         public async Task<IEnumerable<OrderHeader>> GetAllOrderAsync(string? userId = null, string? status = null, bool includeUser = false, bool includeDetails = false)
