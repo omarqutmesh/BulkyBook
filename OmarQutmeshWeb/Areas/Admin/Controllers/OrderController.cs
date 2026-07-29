@@ -16,6 +16,8 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
+        [BindProperty]
+        public OrderHeader OrderHeader { get; set; }
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
@@ -25,6 +27,12 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         {
 
             return View();
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(int orderId)
+        {
+            OrderHeader = await _orderService.GetOrderByIdAsync(orderId, includeDetails: true, includeUser: true);
+            return View(OrderHeader);
         }
 
         #region API CALLS
