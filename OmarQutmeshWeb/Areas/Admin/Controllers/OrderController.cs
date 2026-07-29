@@ -8,7 +8,7 @@ using BulkyBook.Utiltiy;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
+using System.Security.Claims;
 namespace BulkyBookWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -37,9 +37,22 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         #region API CALLS
         [AllowAnonymous]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(string status)
         {
-            var orders = await _orderService.GetAllOrderAsync();
+            string? userId = null;
+
+            if (!User.IsInRole(SD.RoleAdmin) && !User.IsInRole(SD.RoleEmployee))
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                userId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized();
+                }
+            }
+
+            var orders = await _orderService.GetAllOrderAsync(userId, status);
             return Json(new { data = orders });
         }
 

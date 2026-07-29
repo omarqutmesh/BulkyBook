@@ -1,10 +1,21 @@
-﻿var productDataTable;
+﻿var dataTable;
 
 $(document).ready(function () {
-    productDataTable();
+    var url = window.location.search;
+    if (url.includes("cancelled")) {
+        loadDataTable("cancelled");
+    } else if (url.includes("completed")) {
+        loadDataTable("completed");
+    } else if (url.includes("inprocess")) {
+        loadDataTable("inprocess");
+    } else if (url.includes("approved")) {
+        loadDataTable("approved");
+    } else {
+        loadDataTable("all");
+    }
 })
-
-productDataTable = $('#tblData').DataTable({
+function loadDataTable(status) { 
+    dataTable = $('#tblData').DataTable({
     ajax: '/admin/order/getall',
     columns: [
         { data: 'id', "width": "5%" },
@@ -36,4 +47,5 @@ productDataTable = $('#tblData').DataTable({
             }
         }
     ]
-});
+})
+};
