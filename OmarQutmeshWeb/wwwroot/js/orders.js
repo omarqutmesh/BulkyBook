@@ -4,10 +4,13 @@ $(document).ready(function () {
     var url = window.location.search;
     if (url.includes("cancelled")) {
         loadDataTable("cancelled");
-    } else if (url.includes("completed")) {
-        loadDataTable("completed");
-    } else if (url.includes("inprocess")) {
-        loadDataTable("inprocess");
+    } else if (url.includes("shipped")) {
+        loadDataTable("shipped");
+    } else if (url.includes("pending")) {
+        loadDataTable("pending");
+    }
+    else if (url.includes("processing")) {
+        loadDataTable("processing");
     } else if (url.includes("approved")) {
         loadDataTable("approved");
     } else {
@@ -16,7 +19,7 @@ $(document).ready(function () {
 })
 function loadDataTable(status) { 
     dataTable = $('#tblData').DataTable({
-    ajax: '/admin/order/getall',
+        ajax: '/admin/order/getall?status=' + status,
     columns: [
         { data: 'id', "width": "5%" },
         { data: 'name', "width": "20%" },
