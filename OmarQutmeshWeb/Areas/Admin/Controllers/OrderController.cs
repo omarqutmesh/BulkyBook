@@ -34,6 +34,32 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             OrderHeader = await _orderService.GetOrderByIdAsync(orderId, includeDetails: true, includeUser: true);
             return View(OrderHeader);
         }
+        [HttpPost]
+        [Authorize(Roles = SD.RoleAdmin + "," + SD.RoleEmployee)]
+        public async Task<IActionResult> UpdateOrderDetails()
+        {
+            var orderHeaderFromDb = await _orderService.GetOrderByIdAsync(OrderHeader.Id);
+            orderHeaderFromDb.Name = OrderHeader.Name;
+            orderHeaderFromDb.PhoneNumber = OrderHeader.PhoneNumber;
+            orderHeaderFromDb.StreetAddress = OrderHeader.StreetAddress;
+            orderHeaderFromDb.City = OrderHeader.City;
+            orderHeaderFromDb.State = OrderHeader.State;
+            orderHeaderFromDb.PostalCode = OrderHeader.PostalCode;
+            if (!string.IsNullOrEmpty(OrderHeader.Carrier) && orderHeaderFromDb.OrderStatus == SD.StatusShipped)
+            {
+                orderHeaderFromDb.Carrier = OrderHeader.Carrier;
+            }
+            if (!string.IsNullOrEmpty(OrderHeader.TrackingNumber) && orderHeaderFromDb.OrderStatus == SD.StatusShipped)
+            {
+                orderHeaderFromDb.TrackingNumber = OrderHeader.TrackingNumber;
+            }
+            await _orderService.UpdateOrderAsync(orderHeaderFromDb);
+
+            TempData["Success"] = "Order Details Updated Successfully.";
+
+            return RedirectToAction(nameof(Details), new { orderId = orderHeaderFromDb.Id });
+
+        }
 
         #region API CALLS
         [AllowAnonymous]
