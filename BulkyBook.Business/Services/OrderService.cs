@@ -64,7 +64,7 @@ namespace BulkyBook.Business.Services
             return await query.FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public Task UpdateOrderAsync(OrderHeader orderHeader)
+        public async Task UpdateOrderAsync(OrderHeader orderHeader)
         {
             _db.OrderHeaders.Update(orderHeader);
             await _db.SaveChangesAsync();
