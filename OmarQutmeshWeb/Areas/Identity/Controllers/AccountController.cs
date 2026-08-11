@@ -40,12 +40,7 @@ namespace BulkyBookWeb.Areas.Identity.Controllers
 
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByEmailAsync(loginVM.Email);
-                    if (user != null)
-                    {
-                        var count = await _shoppingCartService.GetCartCountAsync(user.Id);
-                        HttpContext.Session.SetInt32(SD.SessionCart, count);
-                    }
+                   
                     // Redirect to returnUrl if valid, otherwise go to Home
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
@@ -114,7 +109,6 @@ namespace BulkyBookWeb.Areas.Identity.Controllers
                     //user has been created
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     // Redirect to returnUrl if valid, otherwise go to Home
-                    HttpContext.Session.SetInt32(SD.SessionCart, 0);
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
