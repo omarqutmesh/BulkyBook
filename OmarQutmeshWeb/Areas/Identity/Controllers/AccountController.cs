@@ -46,9 +46,9 @@ namespace BulkyBookWeb.Areas.Identity.Controllers
                     {
                         return Redirect(returnUrl);
                     }
-                    if (User.IsInRole(SD.RoleAdmin) || User.IsInRole(SD.RoleEmployee)) 
+                    if (User.IsInRole(SD.RoleAdmin) || User.IsInRole(SD.RoleEmployee))
                     {
-                        return RedirectToAction("Index", "Dashboard", new {area = "Admin"});
+                        return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
                     }
                     return RedirectToAction("Index", "Home", new { area = "Customer" });
                 }
