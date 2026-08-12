@@ -35,4 +35,23 @@
 			}
 		}
 	});
+
+	new Chart(document.getElementById('statusChart'), {
+		type: 'doughnut',
+		data: {
+			labels: data.statusBreakdown.map(r => r.status),
+			datasets: [{
+				label: 'Order Status',
+				data: data.statusBreakdown.map(r => r.count),
+				borderWidth: 1
+			}]
+		},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true
+				}
+			}
+		}
+	});
 })
