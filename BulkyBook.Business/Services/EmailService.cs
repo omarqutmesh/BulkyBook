@@ -37,7 +37,15 @@ namespace BulkyBook.Business.Services
 
                 if (response.Messages != null && response.Messages.Length > 0)
                 {
-
+                    var message = response.Messages[0];
+                        if (message.Status == "success")
+                        {
+                           return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                 }
 
                 return true;
