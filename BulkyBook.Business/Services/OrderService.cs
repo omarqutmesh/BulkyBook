@@ -72,6 +72,10 @@ namespace BulkyBook.Business.Services
                 }
 
             }
+            else
+            {
+                order.OrderStatus = SD.StatusCancelled;
+            }
 
             await _db.SaveChangesAsync();
             return refundIssued;
