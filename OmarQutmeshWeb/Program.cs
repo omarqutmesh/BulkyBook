@@ -26,7 +26,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequiredUniqueChars = 1;          // Minimum unique characters
 }).AddDefaultTokenProviders().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductService, BulkyBook.Business.Services.ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
