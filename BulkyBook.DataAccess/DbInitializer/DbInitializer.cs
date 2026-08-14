@@ -1,7 +1,6 @@
 ﻿using BulkyBook.DataAccess.Data;
 using BulkyBook.Models;
 using BulkyBook.Utiltiy;
-using BulkyBookWeb.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
