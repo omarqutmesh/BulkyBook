@@ -1,13 +1,14 @@
 ﻿using BulkyBook.DataAccess.Data;
 using BulkyBook.Models.ViewModels;
 using BulkyBook.Utiltiy;
-using BulkyBook.DataAccess.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BulkyBookWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.RoleAdmin)]
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _db;

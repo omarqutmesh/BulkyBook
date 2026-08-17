@@ -22,13 +22,12 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         {
             _orderService = orderService;
         }
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
 
             return View();
         }
-        [AllowAnonymous]
+        [Authorize(Roles = SD.RoleAdmin + "," + SD.RoleEmployee)]
         public async Task<IActionResult> Details(int orderId)
         {
             OrderHeader = await _orderService.GetOrderByIdAsync(orderId, includeDetails: true, includeUser: true);
@@ -132,7 +131,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         }
 
         #region API CALLS
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> GetAll(string status)
         {
             string? userId = null;

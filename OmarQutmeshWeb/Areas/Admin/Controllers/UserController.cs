@@ -120,7 +120,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         }
 
         #region API CALLS
-        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAllUsersAsync();

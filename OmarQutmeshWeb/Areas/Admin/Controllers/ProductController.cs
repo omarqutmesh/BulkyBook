@@ -25,7 +25,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             _categoryService = categoryService;
             _webHostEnvironment = webHostEnvironment;
         }
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
 
@@ -122,7 +121,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
 
         #region API CALLS
-        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var products = await _productService.GetAllProductsAsync(true);
