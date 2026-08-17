@@ -121,10 +121,32 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
 
         #region API CALLS
+        [HttpPost]
         public async Task<IActionResult> GetAll()
         {
-            var products = await _productService.GetAllProductsAsync(true);
-            return Json(new { data = products });
+            var draw = Request.Form["draw"].FirstOrDefault();
+            var start = Request.Form["start"].FirstOrDefault();
+            var length = Request.Form["length"].FirstOrDefault();
+            var searchValue = Request.Form["search[value]"].FirstOrDefault();
+            var sortColumnIndex = Request.Form["order[0][column]"].FirstOrDefault();
+            var sortColumn = sortColumnIndex != null
+                ? Request.Form[$"columns[{sortColumnIndex}][data]"].FirstOrDefault()
+                : null;
+            var sortDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+            int pageSize = length != null ? Convert.ToInt32(length) : 10;
+            int skip = start != null ? Convert.ToInt32(start) : 0;
+
+            var (items, totalCount, filteredCount) = await _productService.GetProductsForDataTableAsync(
+                skip, pageSize, searchValue, sortColumn, sortDirection);
+
+            return Json(new
+            {
+                draw = Convert.ToInt32(draw),
+                recordsTotal = totalCount,
+                recordsFiltered = filteredCount,
+                data = items
+            });
         }
 
 

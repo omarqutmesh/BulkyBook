@@ -1,10 +1,12 @@
 ﻿using BulkyBook.Business.Services.IServices;
-using BulkyBook.Models;
 using BulkyBook.DataAccess.Data;
+using BulkyBook.Models;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using BulkyBook.Models.ViewModels;
 
 namespace BulkyBook.Business.Services
 {
@@ -63,6 +65,67 @@ namespace BulkyBook.Business.Services
         {
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
+        }
+
+public async Task<PagedResult<Product>> GetPagedProductsAsync(int pageNumber, int pageSize, bool includeCategory = false)
+    {
+        if (pageNumber < 1) pageNumber = 1;
+        if (pageSize < 1) pageSize = 8;
+
+        IQueryable<Product> query = _context.Products;
+        if (includeCategory)
+        {
+            query = query.Include(u => u.Category);
+        }
+
+        query = query.OrderBy(p => p.Id);
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<Product>
+        {
+            Items = items,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
+    }
+        public async Task<(IEnumerable<Product> Items, int TotalCount, int FilteredCount)> GetProductsForDataTableAsync(
+    int skip, int pageSize, string? searchValue, string? sortColumn, string? sortDirection)
+        {
+            IQueryable<Product> query = _context.Products.Include(p => p.Category);
+
+            var totalCount = await query.CountAsync();
+
+            if (!string.IsNullOrWhiteSpace(searchValue))
+            {
+                var search = searchValue.Trim().ToLower();
+                query = query.Where(p =>
+                    p.Title.ToLower().Contains(search) ||
+                    p.Author.ToLower().Contains(search) ||
+                    p.ISBN.ToLower().Contains(search));
+            }
+
+            var filteredCount = await query.CountAsync();
+
+            bool desc = string.Equals(sortDirection, "desc", StringComparison.OrdinalIgnoreCase);
+            query = sortColumn switch
+            {
+                "title" => desc ? query.OrderByDescending(p => p.Title) : query.OrderBy(p => p.Title),
+                "isbn" => desc ? query.OrderByDescending(p => p.ISBN) : query.OrderBy(p => p.ISBN),
+                "price" => desc ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price),
+                "author" => desc ? query.OrderByDescending(p => p.Author) : query.OrderBy(p => p.Author),
+                _ => query.OrderBy(p => p.Id)
+            };
+
+            var items = await query.Skip(skip).Take(pageSize).ToListAsync();
+
+            return (items, totalCount, filteredCount);
         }
 
     }

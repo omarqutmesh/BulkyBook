@@ -1019,3 +1019,35 @@ div.dt-container div.dt-info {
     #themeToggle:hover {
         transform: rotate(25deg);
     }
+/* Pagination */
+
+.pagination .page-link {
+    width: 42px;
+    height: 42px;
+    border: none;
+    background-color: #f5f1ea;
+    color: #3f3a34;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+    .pagination .page-link:hover {
+        background-color: #3f3a34;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+.pagination .page-item.active .page-link {
+    background-color: #3f3a34;
+    color: #ffffff;
+}
+
+.pagination .pagination-arrow {
+    font-size: 14px;
+}
+
+.pagination .page-item.disabled .page-link {
+    opacity: 0.35;
+    pointer-events: none;
+}

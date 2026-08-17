@@ -1,18 +1,20 @@
-﻿@model IEnumerable<Product>
+﻿@model BulkyBook.Models.ViewModels.PagedResult<Product>
 <partial name="_Hero"/>
 
 <div class="container py-5" id="catalog">
     <div class="mb-4">
         <h2 class="fw-bold mb-1">Our Collection</h2>
-        <p class="text-secondary mb-0">Explore all @Model.Count() books in our catalog</p>
+        <p class="text-secondary mb-0">
+            Explore all @Model.TotalCount books in our catalog
+        </p>
     </div>
 
     <!-- Books Grid -->
-    @if (Model.Any()) 
+    @if (Model.Items.Any())
     { 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
 
-            @foreach (var product in Model) 
+            @foreach (var product in Model.Items)
             { 
             <div class="col">
             <div class="card h-100 border shadow-sm book-card">
@@ -57,6 +59,44 @@
             }
 
     </div>
+    }
+    @if (Model.TotalPages >= 1)
+    {
+        <nav class="mt-5" aria-label="Product pagination">
+            <ul class="pagination justify-content-center align-items-center gap-2">
+
+                <!-- Previous -->
+                <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link pagination-arrow rounded-circle d-flex align-items-center justify-content-center"
+                       asp-action="Index"
+                       asp-route-page="@(Model.PageNumber - 1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
+                <!-- Page Numbers -->
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link rounded-circle d-flex align-items-center justify-content-center"
+                           asp-action="Index"
+                           asp-route-page="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                <!-- Next -->
+                <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                    <a class="page-link pagination-arrow rounded-circle d-flex align-items-center justify-content-center"
+                       asp-action="Index"
+                       asp-route-page="@(Model.PageNumber + 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
     }
 </div>
 

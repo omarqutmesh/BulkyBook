@@ -13,16 +13,19 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
     {
         private readonly IProductService _productService;
         private readonly IShoppingCartService _shoppingCartService;
+        private const int PageSize = 8;
+
+        public async Task<IActionResult> Index(int page = 1)
+        {
+            if (page < 1) page = 1;
+            var pagedProducts = await _productService.GetPagedProductsAsync(page, PageSize, includeCategory: true);
+            return View(pagedProducts);
+        }
 
         public HomeController(IProductService productService, IShoppingCartService shoppingCartService) 
         {
             _productService = productService;
             _shoppingCartService = shoppingCartService;
-        }
-        public async Task<IActionResult> Index()
-        {
-            var products = await _productService.GetAllProductsAsync(includeCategory:true);
-            return View(products);
         }
         public async Task<IActionResult> Details(int productId)
         {

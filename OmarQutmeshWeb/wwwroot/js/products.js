@@ -4,19 +4,24 @@ $(document).ready(function () {
 })
 function loadDataTable() {
     productDataTable = $('#tblData').DataTable({
-        ajax: '/admin/product/getall',
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '/admin/product/getall',
+            type: 'POST'
+        },
         columns: [
             { data: "title", width: "25%" },
             { data: "isbn", width: "15%" },
             { data: "price", width: "10%", "render": function (data) { return '$' + data.toFixed(2); } },
             { data: "author", width: "15%" },
             {
-                data: 'category.name', width: "10%", "render": function (data) {
+                data: 'category.name', width: "10%", orderable: false, "render": function (data) {
                     return '<span class = "badge bg-secondary">' + data + '</span>'
                 }
             },
             {
-                data: 'id', width: "25%", "render": function (data) {
+                data: 'id', width: "25%", orderable: false, "render": function (data) {
                     return `<div class = "d-flex gap-2 justify-content-end">
                  <a href="/admin/product/upsert?id=${data}" class="btn btn-sm btn-outline-success">
                                  <i class="bi bi-pencil-square"></i> Edit
@@ -31,6 +36,7 @@ function loadDataTable() {
         ]
     })
 }
+
 function Delete(url) {
     Swal.fire({
         title: "Are you sure?",
